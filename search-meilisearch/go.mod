@@ -1,4 +1,4 @@
-module github.com/apache/answer-plugins/search-meilisearch
+module github.com/ZhuJHua/answer-plugins/search-meilisearch
 
 go 1.22.0
 
