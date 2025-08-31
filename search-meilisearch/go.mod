@@ -5,13 +5,13 @@ go 1.22.0
 require (
 	github.com/apache/answer v1.4.2-RC1.0.20250107023923-061894735091
 	github.com/apache/answer-plugins/util v1.0.3-0.20250107030257-cf94ebc70954
-	github.com/meilisearch/meilisearch-go v0.25.0
+	github.com/meilisearch/meilisearch-go v0.33.2
 	github.com/segmentfault/pacman v1.0.5-0.20230822083413-c0075a2d401f
 )
 
 require (
 	github.com/LinkinStars/go-i18n/v2 v2.2.2 // indirect
-	github.com/andybalholm/brotli v1.1.0 // indirect
+	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bytedance/sonic v1.12.2 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
@@ -24,7 +24,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.1 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/google/wire v0.5.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect

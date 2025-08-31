@@ -31,7 +31,7 @@ func (s *Search) tryToCreateIndex() {
 		log.Infof("index %s already exist, skip create", s.Config.IndexName)
 		return
 	}
-	if err != nil && index == nil {
+	if err != nil {
 		log.Infof("get index failed %s, maybe not exist, try to create", err)
 	}
 

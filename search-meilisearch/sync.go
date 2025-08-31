@@ -21,6 +21,7 @@ package meilisearch
 
 import (
 	"context"
+
 	"github.com/apache/answer/plugin"
 	"github.com/segmentfault/pacman/log"
 )
@@ -76,8 +77,9 @@ func (s *Search) syncQuestionAndAnswerData(ctx context.Context,
 			if i+MaxPutPerSize > len(dataList) {
 				end = len(dataList)
 			}
+			key := primaryKey
 			resp, err := s.Client.Index(s.Config.IndexName).AddDocuments(
-				dataList[i:end], primaryKey)
+				dataList[i:end], &key)
 			if err != nil {
 				log.Errorf("add documents failed %s", err)
 				return

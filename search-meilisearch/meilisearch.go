@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/apache/answer-plugins/search-meilisearch/i18n"
 	"github.com/apache/answer-plugins/util"
@@ -49,7 +50,7 @@ var (
 
 type Search struct {
 	Config  *SearchConfig
-	Client  *meilisearch.Client
+	Client  meilisearch.ServiceManager
 	syncer  plugin.SearchSyncer
 	syncing bool
 	lock    sync.Mutex
@@ -150,11 +151,12 @@ func (s *Search) UpdateContent(_ context.Context, content *plugin.SearchContent)
 	}
 
 	index := s.Client.Index(s.Config.IndexName)
+	key := primaryKey
 	if s.Config.Async {
-		_, err := index.AddDocuments([]*plugin.SearchContent{content}, primaryKey)
+		_, err := index.AddDocuments([]*plugin.SearchContent{content}, &key)
 		return err
 	} else {
-		resp, err := index.AddDocuments([]*plugin.SearchContent{content}, primaryKey)
+		resp, err := index.AddDocuments([]*plugin.SearchContent{content}, &key)
 		if err != nil {
 			return err
 		}
@@ -243,10 +245,7 @@ func (s *Search) ConfigReceiver(config []byte) error {
 
 	log.Debugf("try to init meilisearch client: %s", conf.Host)
 
-	s.Client = meilisearch.NewClient(meilisearch.ClientConfig{
-		Host:   conf.Host,
-		APIKey: conf.ApiKey,
-	})
+	s.Client = meilisearch.New(conf.Host, meilisearch.WithAPIKey(conf.ApiKey))
 
 	s.tryToCreateIndex()
 
@@ -256,7 +255,14 @@ func (s *Search) ConfigReceiver(config []byte) error {
 		log.Errorf("update searchable attributes error: %s", err.Error())
 		return err
 	}
-	_, err = index.UpdateFilterableAttributes(&[]string{"title", "content", "tags", "status", "answers", "type", "questionID", "userID", "views", "created", "active", "score", "hasAccepted"})
+	attrs := []string{"title", "content", "tags", "status", "answers", "type", "questionID", "userID", "views", "created", "active", "score", "hasAccepted"}
+
+	filterable := make([]interface{}, len(attrs))
+	for i, v := range attrs {
+		filterable[i] = v
+	}
+
+	_, err = index.UpdateFilterableAttributes(&filterable)
 	if err != nil {
 		log.Errorf("update filterable attributes error: %s", err.Error())
 		return err
@@ -375,8 +381,8 @@ func (s *Search) buildFilter(cond *plugin.SearchBasicCond) []string {
 	return filter
 }
 
-func waitForTask(client *meilisearch.Client, resp *meilisearch.TaskInfo) error {
-	task, err := client.WaitForTask(resp.TaskUID)
+func waitForTask(client meilisearch.ServiceManager, resp *meilisearch.TaskInfo) error {
+	task, err := client.WaitForTask(resp.TaskUID, time.Duration(10)*time.Second)
 	if err != nil {
 		return err
 	}
