@@ -28,7 +28,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apache/answer-plugins/search-meilisearch/i18n"
+	"github.com/ZhuJHua/answer-plugins/search-meilisearch/i18n"
 	"github.com/apache/answer-plugins/util"
 	"github.com/apache/answer/plugin"
 	"github.com/meilisearch/meilisearch-go"
